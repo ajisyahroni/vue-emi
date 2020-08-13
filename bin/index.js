@@ -243,7 +243,6 @@ if (repoOptions.repo) {
                 let template = eval(add_template_literal)
                 fs.writeFile(`src/repositories/${repoOptions.repo}.js`, template, (err) => {
                     if (err) console.log(err);
-                    console.log('succesfuly create', repoOptions.repo);
                     fs.readdir('src/repositories', (err, files) => {
                         Array.from(files).forEach(file => {
                             if (path.extname(file) == '.js') {
@@ -256,10 +255,9 @@ if (repoOptions.repo) {
                         })
                         let object = '{' + objectTemplate + '}'
                         final = importTemplate + "\n" + "export default" + object;
-                        console.log(final)
                         fs.writeFile(`src/repositories/index.js`, final, (err) => {
                             if (err) console.log(err);
-                            console.log('succesfuly create')
+                            console.log('succesfuly create', repoOptions.repo, 'repository');
                         })
                     })
                 })
