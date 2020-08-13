@@ -52,6 +52,13 @@ const boxenOptions = {
     borderColor: "green",
     backgroundColor: "#555555"
 };
+const boxenErrorOptions = {
+    padding: 1,
+    margin: 1,
+    borderStyle: "round",
+    borderColor: "red",
+    backgroundColor: "#555555"
+};
 // END BOXEN 
 
 const creatingView = (viewName) => {
@@ -95,13 +102,7 @@ const creatingComponent = (componentName) => {
 if (options.view) {
     if (fs.existsSync('src/views')) {
         if (fs.existsSync(`src/views/${options.view}.vue`)) {
-            let boxenErrorOptions = {
-                padding: 1,
-                margin: 1,
-                borderStyle: "round",
-                borderColor: "red",
-                backgroundColor: "#555555"
-            };
+
             let boxenError = chalk.white.bold(`src/views/${options.view}.vue already exist`);
             let msgErrorBox = boxen(boxenError, boxenErrorOptions);
             console.log(msgErrorBox)
@@ -125,15 +126,8 @@ if (options.view) {
 if (componentOptions.component) {
     if (fs.existsSync('src/components')) {
         if (fs.existsSync(`src/components/${componentOptions.component}.vue`)) {
-            let boxenErrorcomponentOptions = {
-                padding: 1,
-                margin: 1,
-                borderStyle: "round",
-                borderColor: "red",
-                backgroundColor: "#555555"
-            };
             let boxenError = chalk.white.bold(`src/components/${componentOptions.component}.vue already exist`);
-            let msgErrorBox = boxen(boxenError, boxenErrorcomponentOptions);
+            let msgErrorBox = boxen(boxenError, boxenErrorOptions);
             console.log(msgErrorBox)
         }
         else {
@@ -232,41 +226,51 @@ if (apiOptions.api) {
 }
 
 if (repoOptions.repo) {
-    let importTemplate = '';
-    let objectTemplate = ''
+    if (fs.existsSync('src/api/index.js') && (fs.existsSync('src/api/axios.js') || fs.existsSync('src/api/fetch.js'))) {
+        // if api scaffolding are exist
+        let importTemplate = '';
+        let objectTemplate = ''
 
-    let final = ''
+        let final = ''
 
 
-    fs.mkdir('src/repositories', { recursive: true }, (err) => {
-        if (err) console.log(err);
-        const repoPath = path.join(__dirname, 'template', 'repositories', 'template.repo.js')
-        fs.readFile(repoPath, 'utf8', (err, data) => {
-            if (err) console.log(err)
-            let add_template_literal = '`' + data + '`'
-            let template = eval(add_template_literal)
-            fs.writeFile(`src/repositories/${repoOptions.repo}.js`, template, (err) => {
-                if (err) console.log(err);
-                console.log('succesfuly create', repoOptions.repo);
-                fs.readdir('src/repositories', (err, files) => {
-                    Array.from(files).forEach(file => {
-                        if (path.extname(file) == '.js') {
-                            if (file !== "index.js") {
-                                let basename = path.basename(file, '.js')
-                                importTemplate += `import ${basename} from './${file}';\n`;
-                                objectTemplate += basename + ','
+        fs.mkdir('src/repositories', { recursive: true }, (err) => {
+            if (err) console.log(err);
+            const repoPath = path.join(__dirname, 'template', 'repositories', 'template.repo.js')
+            fs.readFile(repoPath, 'utf8', (err, data) => {
+                if (err) console.log(err)
+                let add_template_literal = '`' + data + '`'
+                let template = eval(add_template_literal)
+                fs.writeFile(`src/repositories/${repoOptions.repo}.js`, template, (err) => {
+                    if (err) console.log(err);
+                    console.log('succesfuly create', repoOptions.repo);
+                    fs.readdir('src/repositories', (err, files) => {
+                        Array.from(files).forEach(file => {
+                            if (path.extname(file) == '.js') {
+                                if (file !== "index.js") {
+                                    let basename = path.basename(file, '.js')
+                                    importTemplate += `import ${basename} from './${file}';\n`;
+                                    objectTemplate += basename + ','
+                                }
                             }
-                        }
-                    })
-                    let object = '{' + objectTemplate + '}'
-                    final = importTemplate + "\n" + "export default" + object;
-                    console.log(final)
-                    fs.writeFile(`src/repositories/index.js`, final, (err) => {
-                        if (err) console.log(err);
-                        console.log('succesfuly create')
+                        })
+                        let object = '{' + objectTemplate + '}'
+                        final = importTemplate + "\n" + "export default" + object;
+                        console.log(final)
+                        fs.writeFile(`src/repositories/index.js`, final, (err) => {
+                            if (err) console.log(err);
+                            console.log('succesfuly create')
+                        })
                     })
                 })
             })
         })
-    })
+    }
+    else {
+        let boxenError = chalk.white.bold(`emi -a`);
+        let msgErrorBox = boxen(boxenError, boxenErrorOptions);
+        console.log('please run this command first')
+        console.log(msgErrorBox)
+    }
+
 }
