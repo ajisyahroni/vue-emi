@@ -9,6 +9,7 @@ const path = require("path");
 const chalk = require("chalk");
 const boxen = require("boxen");
 const yargs = require("yargs");
+const prompts = require('prompts');
 // end import here
 
 /**=======================
@@ -24,6 +25,13 @@ const componentOptions = yargs
     .usage('Usage: -component <name>')
     .option("c", { alias: "component", describe: "your component name", type: "string" })
     .argv;
+
+
+const apiOptions = yargs
+    .usage('Usage: -api')
+    .option("a", { alias: "api", describe: "your api scaffolding" })
+    .argv;
+
 // end here
 
 /**
@@ -80,7 +88,21 @@ const creatingComponent = (componentName) => {
 
 if (options.view) {
     if (fs.existsSync('src/views')) {
-        creatingView(options.view)
+        if (fs.existsSync(`src/views/${options.view}.vue`)) {
+            let boxenErrorOptions = {
+                padding: 1,
+                margin: 1,
+                borderStyle: "round",
+                borderColor: "red",
+                backgroundColor: "#555555"
+            };
+            let boxenError = chalk.white.bold(`src/views/${options.view}.vue already exist`);
+            let msgErrorBox = boxen(boxenError, boxenErrorOptions);
+            console.log(msgErrorBox)
+        }
+        else {
+            creatingView(options.view)
+        }
     }
     else {
         console.log('creating src/views dir');
@@ -96,7 +118,22 @@ if (options.view) {
 
 if (componentOptions.component) {
     if (fs.existsSync('src/components')) {
-        creatingComponent(componentOptions.component)
+        if (fs.existsSync(`src/components/${componentOptions.component}.vue`)) {
+            let boxenErrorcomponentOptions = {
+                padding: 1,
+                margin: 1,
+                borderStyle: "round",
+                borderColor: "red",
+                backgroundColor: "#555555"
+            };
+            let boxenError = chalk.white.bold(`src/components/${componentOptions.component}.vue already exist`);
+            let msgErrorBox = boxen(boxenError, boxenErrorcomponentOptions);
+            console.log(msgErrorBox)
+        }
+        else {
+            creatingComponent(componentOptions.component)
+        }
+
     }
     else {
         console.log('creating src/components dir');
@@ -108,4 +145,88 @@ if (componentOptions.component) {
             creatingComponent(componentOptions.component);
         })
     }
+}
+
+
+const axiosInit = () => {
+    const axiosPath = path.join(__dirname, 'template', 'api', 'template.axios.js');
+    const indexPath = path.join(__dirname, 'template', 'api', 'template.index.axios.js');
+
+    fs.readFile(axiosPath, 'utf8', (err, axiosTemplate) => {
+        if (err) console.log(err)
+
+        fs.writeFile(`src/api/axios.js`, axiosTemplate, (err) => {
+            if (err) console.log(err);
+        })
+    })
+
+    fs.readFile(indexPath, 'utf8', (err, indexTemplate) => {
+        if (err) console.log(err)
+
+        fs.writeFile(`src/api/index.js`, indexTemplate, (err) => {
+            if (err) console.log(err);
+        })
+    })
+}
+
+const fetchInit = () => {
+    const fetchPath = path.join(__dirname, 'template', 'api', 'template.fetch.js');
+    const indexPath = path.join(__dirname, 'template', 'api', 'template.index.fetch.js');
+
+    fs.readFile(fetchPath, 'utf8', (err, fetchTemplate) => {
+        if (err) console.log(err)
+
+        fs.writeFile(`src/api/fetch.js`, fetchTemplate, (err) => {
+            if (err) console.log(err);
+        })
+    })
+
+    fs.readFile(indexPath, 'utf8', (err, indexTemplate) => {
+        if (err) console.log(err)
+        fs.writeFile(`src/api/index.js`, indexTemplate, (err) => {
+            if (err) console.log(err);
+        })
+    })
+}
+
+if (apiOptions.api) {
+    // if (fs.existsSync('src/api/index.js')) {
+    //     console.log('api axios scaffolding already exist')
+    // }
+    // else {
+
+    fs.mkdir('src/api', {
+        recursive: true
+    }, (err) => {
+        if (err) console.log('error when creating directories');
+        console.log('creating api directory');
+
+        // ask user to select choice
+        prompts({
+            type: 'select',
+            name: 'value',
+            message: 'Select rest api client ?',
+            choices: [
+                { title: 'axios', value: 'axios' },
+                { title: 'fetch', value: 'fetch' },
+            ],
+            initial: 1
+        }).then(response => {
+            console.log("creating api axios scaffolding", response.value)
+            switch (response.value) {
+                case "axios":
+                    axiosInit()
+                    break;
+
+                case "fetch":
+                    fetchInit()
+                    break;
+                default:
+                    fetchInit();
+                    break;
+            }
+        })
+
+    })
+    // }
 }

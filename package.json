@@ -15,11 +15,12 @@
   "dependencies": {
     "boxen": "^4.0.0",
     "chalk": "^2.4.2",
+    "prompts": "^2.3.2",
     "yargs": "^13.2.4"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ajisyahroni/vue-emi.git"
   },
-  "homepage":"https://github.com/ajisyahroni/vue-emi.git#readme"
+  "homepage": "https://github.com/ajisyahroni/vue-emi.git#readme"
 }
