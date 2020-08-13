@@ -196,11 +196,6 @@ const fetchInit = () => {
 }
 
 if (apiOptions.api) {
-    // if (fs.existsSync('src/api/index.js')) {
-    //     console.log('api axios scaffolding already exist')
-    // }
-    // else {
-
     fs.mkdir('src/api', {
         recursive: true
     }, (err) => {
@@ -234,7 +229,6 @@ if (apiOptions.api) {
         })
 
     })
-    // }
 }
 
 if (repoOptions.repo) {
