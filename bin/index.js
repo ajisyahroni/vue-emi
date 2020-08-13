@@ -32,6 +32,12 @@ const apiOptions = yargs
     .option("a", { alias: "api", describe: "your api scaffolding" })
     .argv;
 
+const repoOptions = yargs
+    .usage('Usage: -repo')
+    .option("r", { alias: "repo", describe: "your repository pattern scaffolding" })
+    .argv;
+
+
 // end here
 
 /**
@@ -229,4 +235,44 @@ if (apiOptions.api) {
 
     })
     // }
+}
+
+if (repoOptions.repo) {
+    let importTemplate = '';
+    let objectTemplate = ''
+
+    let final = ''
+
+
+    fs.mkdir('src/repositories', { recursive: true }, (err) => {
+        if (err) console.log(err);
+        const repoPath = path.join(__dirname, 'template', 'repositories', 'template.repo.js')
+        fs.readFile(repoPath, 'utf8', (err, data) => {
+            if (err) console.log(err)
+            let add_template_literal = '`' + data + '`'
+            let template = eval(add_template_literal)
+            fs.writeFile(`src/repositories/${repoOptions.repo}.js`, template, (err) => {
+                if (err) console.log(err);
+                console.log('succesfuly create', repoOptions.repo);
+                fs.readdir('src/repositories', (err, files) => {
+                    Array.from(files).forEach(file => {
+                        if (path.extname(file) == '.js') {
+                            if (file !== "index.js") {
+                                let basename = path.basename(file, '.js')
+                                importTemplate += `import ${basename} from './${file}';\n`;
+                                objectTemplate += basename + ','
+                            }
+                        }
+                    })
+                    let object = '{' + objectTemplate + '}'
+                    final = importTemplate + "\n" + "export default" + object;
+                    console.log(final)
+                    fs.writeFile(`src/repositories/index.js`, final, (err) => {
+                        if (err) console.log(err);
+                        console.log('succesfuly create')
+                    })
+                })
+            })
+        })
+    })
 }
