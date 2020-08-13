@@ -1,4 +1,5 @@
-const api = "https://your_api_url/api/v1"
+import config from './config'
+const api = config.baseURL;
 
 const options = (method = 'GET', body = {}) => {
     let s = JSON.stringify;

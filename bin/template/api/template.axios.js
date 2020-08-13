@@ -1,5 +1,8 @@
+import config from './config'
 import axios from 'axios';
 
+axios.defaults.baseURL = config.baseURL;
+axios.defaults.timeout = config.timeout;
 
 
 // Add a request interceptor
@@ -24,7 +27,6 @@ axios.interceptors.response.use(function (response) {
 });
 
 
-axios.defaults.baseURL = "https://your_api_url/api/v1";
 
 
 export default axios 

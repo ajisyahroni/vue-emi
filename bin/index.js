@@ -151,6 +151,7 @@ if (componentOptions.component) {
 const axiosInit = () => {
     const axiosPath = path.join(__dirname, 'template', 'api', 'template.axios.js');
     const indexPath = path.join(__dirname, 'template', 'api', 'template.index.axios.js');
+    const configPath = path.join(__dirname, 'template', 'api', 'template.config.js');
 
     fs.readFile(axiosPath, 'utf8', (err, axiosTemplate) => {
         if (err) console.log(err)
@@ -167,11 +168,19 @@ const axiosInit = () => {
             if (err) console.log(err);
         })
     })
+
+    fs.readFile(configPath, 'utf8', (err, configTemplate) => {
+        if (err) console.log(err);
+        fs.writeFile(`src/api/config.js`, configTemplate, (err) => {
+            if (err) console.log(err);
+        })
+    })
 }
 
 const fetchInit = () => {
     const fetchPath = path.join(__dirname, 'template', 'api', 'template.fetch.js');
     const indexPath = path.join(__dirname, 'template', 'api', 'template.index.fetch.js');
+    const configPath = path.join(__dirname, 'template', 'api', 'template.config.js');
 
     fs.readFile(fetchPath, 'utf8', (err, fetchTemplate) => {
         if (err) console.log(err)
@@ -184,6 +193,13 @@ const fetchInit = () => {
     fs.readFile(indexPath, 'utf8', (err, indexTemplate) => {
         if (err) console.log(err)
         fs.writeFile(`src/api/index.js`, indexTemplate, (err) => {
+            if (err) console.log(err);
+        })
+    })
+
+    fs.readFile(configPath, 'utf8', (err, configTemplate) => {
+        if (err) console.log(err);
+        fs.writeFile(`src/api/config.js`, configTemplate, (err) => {
             if (err) console.log(err);
         })
     })
@@ -207,7 +223,7 @@ if (apiOptions.api) {
             ],
             initial: 0
         }).then(response => {
-            console.log("creating api axios scaffolding", response.value)
+            console.log("creating api scaffolding", response.value)
             switch (response.value) {
                 case "axios":
                     axiosInit()
