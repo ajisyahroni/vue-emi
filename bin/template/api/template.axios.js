@@ -3,6 +3,7 @@ import axios from 'axios';
 
 axios.defaults.baseURL = config.baseURL;
 axios.defaults.timeout = config.timeout;
+// axios.defaults.headers['Authorization'] = `Bearer ${JWT}`
 
 
 // Add a request interceptor

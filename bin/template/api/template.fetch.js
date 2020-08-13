@@ -8,7 +8,7 @@ const options = (method = 'GET', body = {}) => {
         body: s(body),
         headers: {
             "Content-Type": "application/json",
-            // 'Authorization': `Bearer JWT_TOKEN`
+            // 'Authorization': `Bearer JWT_TOKEN `  
         }
     }
 }
@@ -21,7 +21,7 @@ export default {
         return fetch(`${api}${url}`, options('POST', body)).then(r => r.json())
     },
     put(url, body) {
-        return fetch(`${api}${url}`, options('PUT',body)).then(r => r.json())
+        return fetch(`${api}${url}`, options('PUT', body)).then(r => r.json())
     },
     delete(url) {
         return fetch(`${api}${url}`, options('DELETE')).then(r => r.json())
