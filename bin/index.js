@@ -56,7 +56,7 @@ const boxenOptions = {
 
 const creatingView = (viewName) => {
     // main logic
-    const viewPath = path.join(__dirname, 'template.view.vue')
+    const viewPath = path.join(__dirname, 'template', 'views', 'template.view.vue')
     fs.readFile(viewPath, 'utf8', (err, data) => {
         if (err) console.log(err)
         let add_template_literal = '`' + data + '`'
@@ -75,7 +75,7 @@ const creatingView = (viewName) => {
 
 const creatingComponent = (componentName) => {
     // main logic
-    const componentPath = path.join(__dirname, 'template.component.vue')
+    const componentPath = path.join(__dirname, 'template', 'components', 'template.component.vue')
     fs.readFile(componentPath, 'utf8', (err, data) => {
         if (err) console.log(err)
         let add_template_literal = '`' + data + '`'
