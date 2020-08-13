@@ -1,6 +1,6 @@
 /**
  * ================================
- * ${ repoOptions.repo } REPO
+ * ${ repoOptions.repo } REPOSITORY
  * 
  * ================================
  */
@@ -11,8 +11,9 @@ const endpoint_domain = '${repoOptions.repo.toLocaleLowerCase()}' // just for ex
 export default {
     /**
     * GET POST PUT DELETE TO REST API
-    * @param body object , id int
-    * @return object
+    * @param {object} body  ,  
+    * @param {int} id or anyting else
+    * @return {Promise}
     */
 
     get() {
