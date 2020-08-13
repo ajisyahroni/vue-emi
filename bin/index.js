@@ -216,7 +216,7 @@ if (apiOptions.api) {
                 { title: 'axios', value: 'axios' },
                 { title: 'fetch', value: 'fetch' },
             ],
-            initial: 1
+            initial: 0
         }).then(response => {
             console.log("creating api axios scaffolding", response.value)
             switch (response.value) {
