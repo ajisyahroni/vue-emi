@@ -5,6 +5,7 @@
 
 <script>
 export default {
+  name:'${componentOptions.component}Component',
   mounted() {},
   data: () => {
     return {};

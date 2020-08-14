@@ -5,6 +5,7 @@
 
 <script>
 export default {
+  name:'${options.view}View',
   mounted() {},
   data: () => {
     return {};
