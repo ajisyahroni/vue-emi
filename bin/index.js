@@ -265,7 +265,7 @@ if (repoOptions.repo) {
                                 if (file !== "index.js") {
                                     let basename = path.basename(file, '.js')
                                     importTemplate += `import ${basename}Repo from './${file}';\n`;
-                                    objectTemplate += `export const ${basename}Repo = ${basename};\n`;
+                                    objectTemplate += `export const ${basename} = ${basename}Repo;\n`;
                                 }
                             }
                         })
