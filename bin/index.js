@@ -4,13 +4,27 @@
 // LOCAL NODE DEPENDENCY
 const fs = require("fs");
 const path = require("path");
+
 // _____________________
 // ONLINE DEPENDENCY
-const chalk = require("chalk");
-const boxen = require("boxen");
 const yargs = require("yargs");
 const prompts = require('prompts');
 // end import here
+
+/** 
+ * ========================
+ * local functions
+ * ========================
+ * */
+// for consoling messages
+const { clgError, clgInfo, clgSuccess } = require('./console');
+// for promisifing
+const { readFile, writeFile, readDir, mkDir } = require('./promisify')
+/** 
+ * ========================
+ * end local functions
+ * ========================
+ * */
 
 /**=======================
  * YARGS HERE
@@ -38,74 +52,54 @@ const repoOptions = yargs
     .argv;
 
 
-// end here
-
-/**
- * ==========================
- * BOXEN OPTIONS
- * ==========================
+/**=======================
+ * end YARGS HERE
+ * ======================
  */
-const boxenOptions = {
-    padding: 1,
-    margin: 1,
-    borderStyle: "round",
-    borderColor: "green",
-    backgroundColor: "#555555"
-};
-const boxenErrorOptions = {
-    padding: 1,
-    margin: 1,
-    borderStyle: "round",
-    borderColor: "red",
-    backgroundColor: "#555555"
-};
-// END BOXEN 
 
-const creatingView = (viewName) => {
-    // main logic
-    const viewPath = path.join(__dirname, 'template', 'views', 'template.view.vue')
-    fs.readFile(viewPath, 'utf8', (err, data) => {
-        if (err) console.log(err)
-        let add_template_literal = '`' + data + '`'
-        let template = eval(add_template_literal)
-        fs.writeFile(`src/views/${viewName}.vue`, template, (err) => {
-            if (err) console.log(err);
 
-            // on success
-            // message on success
-            const greeting = chalk.white.bold(`Creating Vue View: ${viewName}.vue`);
-            const msgBox = boxen(greeting, boxenOptions);
-            console.log(msgBox);
-        })
-    })
+
+
+const creatingView = async (viewName) => {
+    try {
+        // main logic
+        const viewPath = path.join(__dirname, 'template', 'views', 'template.view.vue')
+        let viewTemplate = await readFile(viewPath, 'utf8');
+        let add_template_literal = '`' + viewTemplate + '`';
+        let template = eval(add_template_literal);
+
+        await writeFile(`src/views/${viewName}.vue`, template);
+        // on succes
+        console.log(`success creating ${viewName} view`);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-const creatingComponent = (componentName) => {
-    // main logic
-    const componentPath = path.join(__dirname, 'template', 'components', 'template.component.vue')
-    fs.readFile(componentPath, 'utf8', (err, data) => {
-        if (err) console.log(err)
-        let add_template_literal = '`' + data + '`'
-        let template = eval(add_template_literal)
-        fs.writeFile(`src/components/${componentName}.vue`, template, (err) => {
-            if (err) console.log(err);
+const creatingComponent = async (componentName) => {
+    try {
+        // main logic
+        const componentPath = path.join(__dirname, 'template', 'components', 'template.component.vue')
 
-            // on success
-            // message on success
-            const greeting = chalk.white.bold(`Creating Vue Component: ${componentName}.vue`);
-            const msgBox = boxen(greeting, boxenOptions);
-            console.log(msgBox);
-        })
-    })
+        // read and evaluate template
+        let componentTemplate = await readFile(componentPath, 'utf8');
+        let add_template_literal = '`' + componentTemplate + '`';
+        let template = eval(add_template_literal);
+
+        // write component 
+        await writeFile(`src/components/${componentName}.vue`, template)
+        // on success
+        console.log(`Creating Vue Component: ${componentName}.vue`);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 if (options.view) {
-    if (fs.existsSync('src/views')) {
-        if (fs.existsSync(`src/views/${options.view}.vue`)) {
-
-            let boxenError = chalk.white.bold(`src/views/${options.view}.vue already exist`);
-            let msgErrorBox = boxen(boxenError, boxenErrorOptions);
-            console.log(msgErrorBox)
+    let viewDirectory = 'src/views';
+    if (fs.existsSync(viewDirectory)) {
+        if (fs.existsSync(`${viewDirectory}/${options.view}.vue`)) {
+            console.log(`${viewDirectory}/${options.view}.vue already exist`)
         }
         else {
             creatingView(options.view)
@@ -113,7 +107,7 @@ if (options.view) {
     }
     else {
         console.log('creating src/views dir');
-        fs.mkdir('src/views', {
+        fs.mkdir(viewDirectory, {
             recursive: true,
         }, (err) => {
             if (err) console.log('Error when creating directories')
@@ -124,16 +118,14 @@ if (options.view) {
 }
 
 if (componentOptions.component) {
-    if (fs.existsSync('src/components')) {
-        if (fs.existsSync(`src/components/${componentOptions.component}.vue`)) {
-            let boxenError = chalk.white.bold(`src/components/${componentOptions.component}.vue already exist`);
-            let msgErrorBox = boxen(boxenError, boxenErrorOptions);
-            console.log(msgErrorBox)
+    const componentDirectory = 'src/components'
+    if (fs.existsSync(componentDirectory)) {
+        if (fs.existsSync(`${componentDirectory}/${componentOptions.component}.vue`)) {
+            console.log(`src/components/${componentOptions.component}.vue already exist`)
         }
         else {
             creatingComponent(componentOptions.component)
         }
-
     }
     else {
         console.log('creating src/components dir');
@@ -148,143 +140,178 @@ if (componentOptions.component) {
 }
 
 
-const axiosInit = () => {
+/**
+ * ================================
+ * API SCAFFOLDING
+ * note: axiosInit and fetchInit using configInit
+ * ================================
+ */
+const apiDirectory = "src/api"
+const configInit = async () => {
+    const configPath = path.join(__dirname, 'template', 'api', 'template.config.js');
+    // read and write for config template
+    let configTemplate = await readFile(configPath, 'utf8')
+    await writeFile(`${apiDirectory}/config.js`, configTemplate)
+}
+
+// fix
+const axiosInit = async () => {
     const axiosPath = path.join(__dirname, 'template', 'api', 'template.axios.js');
     const indexPath = path.join(__dirname, 'template', 'api', 'template.index.axios.js');
-    const configPath = path.join(__dirname, 'template', 'api', 'template.config.js');
+    try {
+        // read & write axios template
+        let axiosTemplate = await readFile(axiosPath, 'utf8')
+        await writeFile(`${apiDirectory}/axios.js`, axiosTemplate);
 
-    fs.readFile(axiosPath, 'utf8', (err, axiosTemplate) => {
-        if (err) console.log(err)
+        // read & write index axios template
+        indexTemplate = await readFile(indexPath, 'utf8');
+        await writeFile(`${apiDirectory}/index.js`, indexTemplate)
 
-        fs.writeFile(`src/api/axios.js`, axiosTemplate, (err) => {
-            if (err) console.log(err);
-        })
-    })
+        // read & write config tempalte
+        configInit();
 
-    fs.readFile(indexPath, 'utf8', (err, indexTemplate) => {
-        if (err) console.log(err)
-
-        fs.writeFile(`src/api/index.js`, indexTemplate, (err) => {
-            if (err) console.log(err);
-        })
-    })
-
-    fs.readFile(configPath, 'utf8', (err, configTemplate) => {
-        if (err) console.log(err);
-        fs.writeFile(`src/api/config.js`, configTemplate, (err) => {
-            if (err) console.log(err);
-        })
-    })
+        // success
+        console.log(`successfuly created axios api scaffolding `)
+    } catch (error) {
+        // catch error
+        console.log('ERROR:', error)
+    }
 }
-
-const fetchInit = () => {
+// fix
+const fetchInit = async () => {
     const fetchPath = path.join(__dirname, 'template', 'api', 'template.fetch.js');
     const indexPath = path.join(__dirname, 'template', 'api', 'template.index.fetch.js');
-    const configPath = path.join(__dirname, 'template', 'api', 'template.config.js');
 
-    fs.readFile(fetchPath, 'utf8', (err, fetchTemplate) => {
-        if (err) console.log(err)
+    try {
+        // read & write fetch template
+        let fetchTemplate = await readFile(fetchPath, 'utf8');
+        await writeFile(`${apiDirectory}/fetch.js`, fetchTemplate);
 
-        fs.writeFile(`src/api/fetch.js`, fetchTemplate, (err) => {
-            if (err) console.log(err);
-        })
-    })
+        // read & write index for fetch template
+        let indexTemplate = await readFile(indexPath, 'utf8');
+        await writeFile(`${apiDirectory}/index.js`, indexTemplate);
 
-    fs.readFile(indexPath, 'utf8', (err, indexTemplate) => {
-        if (err) console.log(err)
-        fs.writeFile(`src/api/index.js`, indexTemplate, (err) => {
-            if (err) console.log(err);
-        })
-    })
+        // read & write generate config 
+        configInit();
 
-    fs.readFile(configPath, 'utf8', (err, configTemplate) => {
-        if (err) console.log(err);
-        fs.writeFile(`src/api/config.js`, configTemplate, (err) => {
-            if (err) console.log(err);
-        })
-    })
+        console.log(`successfuly created fetch api scaffolding `)
+    } catch (error) {
+        // catch error
+        console.log(error)
+    }
 }
 
+// fix
+const apiScaffoldingChoice = async () => {
+    // create prompt options
+    let choiceApiOptions = {
+        type: 'select',
+        name: 'value',
+        message: 'Select rest api client ?',
+        choices: [
+            { title: 'axios', value: 'axios' },
+            { title: 'fetch', value: 'fetch' },
+        ],
+        initial: 0
+    }
+    try {
+        // get choice
+        let choice = await prompts(choiceApiOptions);
+        let apiDirectory = "src/api"
+
+        switch (choice.value) {
+            case "axios":
+                await mkDir(apiDirectory, { recursive: true });
+                axiosInit()
+                break;
+
+            case "fetch":
+                await mkDir(apiDirectory, { recursive: true });
+                fetchInit()
+                break;
+            default:
+                console.log('cancel creating api scaffolding')
+                break;
+        }
+    } catch (error) {
+        console.log('ERROR:', error)
+    }
+}
 if (apiOptions.api) {
-    fs.mkdir('src/api', {
-        recursive: true
-    }, (err) => {
-        if (err) console.log('error when creating directories');
-        console.log('creating api directory');
+    apiScaffoldingChoice();
+}
 
-        // ask user to select choice
-        prompts({
-            type: 'select',
-            name: 'value',
-            message: 'Select rest api client ?',
-            choices: [
-                { title: 'axios', value: 'axios' },
-                { title: 'fetch', value: 'fetch' },
-            ],
-            initial: 0
-        }).then(response => {
-            console.log("creating api scaffolding", response.value)
-            switch (response.value) {
-                case "axios":
-                    axiosInit()
-                    break;
+/**
+ * ++++++++++++++++++++++++++++
+ * END API SCAFFOLDING
+ * ++++++++++++++++++++++++++++
+ */
 
-                case "fetch":
-                    fetchInit()
-                    break;
-                default:
-                    console.log('cancel creating api scaffolding')
-                    break;
+
+
+/**
+ * =================================
+ * REPOSITORY SCAFFOLDING
+ * =================================
+ */
+
+const repoScaffolding = async (repoName) => {
+
+    try {
+        let importTemplate = '';
+        let objectTemplate = '';
+
+        let final = '';
+        // repos directory 
+        let repoDirectory = 'src/repositories'
+        const repoPath = path.join(__dirname, 'template', 'repositories', 'template.repo.js');
+
+        // create repo directory
+        await mkDir(repoDirectory, { recursive: true })
+        // read repo and evaluate template
+        let repoTemplte = await readFile(repoPath, 'utf8');
+        let add_template_literal = '`' + repoTemplte + '`';
+        let template = eval(add_template_literal)
+
+        await writeFile(`${repoDirectory}/${repoName}.js`, template);
+
+        // creating repo indexer
+        let files = await readDir(repoDirectory)
+        Array.from(files).map(file => {
+            if (path.extname(file) == '.js') {
+                if (file !== "index.js") {
+                    let basename = path.basename(file, '.js')
+                    importTemplate += `import ${basename}Repo from './${file}';\n`;
+                    objectTemplate += `export const ${basename} = ${basename}Repo;\n`;
+                }
             }
         })
 
-    })
+        final = importTemplate + "\n" + objectTemplate;
+        await writeFile(`${repoDirectory}/index.js`, final);
+
+        // on success
+        console.log('success create repo', repoName)
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 if (repoOptions.repo) {
-    if (fs.existsSync('src/api/index.js') && (fs.existsSync('src/api/axios.js') || fs.existsSync('src/api/fetch.js'))) {
+    let existCondition = fs.existsSync('src/api/index.js') && (fs.existsSync('src/api/axios.js') || fs.existsSync('src/api/fetch.js'));
+    if (existCondition) {
         // if api scaffolding are exist
-        let importTemplate = '';
-        let objectTemplate = ''
-
-        let final = ''
-
-
-        fs.mkdir('src/repositories', { recursive: true }, (err) => {
-            if (err) console.log(err);
-            const repoPath = path.join(__dirname, 'template', 'repositories', 'template.repo.js')
-            fs.readFile(repoPath, 'utf8', (err, data) => {
-                if (err) console.log(err)
-                let add_template_literal = '`' + data + '`'
-                let template = eval(add_template_literal)
-                fs.writeFile(`src/repositories/${repoOptions.repo}.js`, template, (err) => {
-                    if (err) console.log(err);
-                    fs.readdir('src/repositories', (err, files) => {
-                        Array.from(files).forEach(file => {
-                            if (path.extname(file) == '.js') {
-                                if (file !== "index.js") {
-                                    let basename = path.basename(file, '.js')
-                                    importTemplate += `import ${basename}Repo from './${file}';\n`;
-                                    objectTemplate += `export const ${basename} = ${basename}Repo;\n`;
-                                }
-                            }
-                        })
-                        // let object = objectTemplate
-                        final = importTemplate + "\n" + objectTemplate;
-                        fs.writeFile(`src/repositories/index.js`, final, (err) => {
-                            if (err) console.log(err);
-                            console.log('succesfuly create', repoOptions.repo, 'repository');
-                        })
-                    })
-                })
-            })
-        })
+        repoScaffolding(repoOptions.repo);
     }
     else {
-        let boxenError = chalk.white.bold(`emi -a`);
-        let msgErrorBox = boxen(boxenError, boxenErrorOptions);
         console.log('please run this command first')
-        console.log(msgErrorBox)
+        console.log('emi -a')
     }
-
 }
+
+/**
+ * +++++++++++++++++++++++++
+ * END REPO SCAFOLDING
+ * +++++++++++++++++++++++++
+ */
