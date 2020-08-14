@@ -1,7 +1,7 @@
 import config from './config'
 import axios from 'axios';
 
-axios.defaults.baseURL = config.baseURL;
+axios.defaults.baseURL = config.baseUrl;
 axios.defaults.timeout = config.timeout;
 // axios.defaults.headers['Authorization'] = `Bearer ${JWT}`
 

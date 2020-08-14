@@ -1,5 +1,5 @@
 import config from './config'
-const api = config.baseURL;
+const api = config.baseUrl;
 
 const options = (method = 'GET', body = {}) => {
     let s = JSON.stringify;
