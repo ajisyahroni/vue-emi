@@ -264,13 +264,13 @@ if (repoOptions.repo) {
                             if (path.extname(file) == '.js') {
                                 if (file !== "index.js") {
                                     let basename = path.basename(file, '.js')
-                                    importTemplate += `import ${basename} from './${file}';\n`;
-                                    objectTemplate += basename + ','
+                                    importTemplate += `import ${basename}Repo from './${file}';\n`;
+                                    objectTemplate += `export const ${basename}Repo = ${basename};\n`;
                                 }
                             }
                         })
-                        let object = '{' + objectTemplate + '}'
-                        final = importTemplate + "\n" + "export default" + object;
+                        // let object = objectTemplate
+                        final = importTemplate + "\n" + objectTemplate;
                         fs.writeFile(`src/repositories/index.js`, final, (err) => {
                             if (err) console.log(err);
                             console.log('succesfuly create', repoOptions.repo, 'repository');
