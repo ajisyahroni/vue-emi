@@ -17,18 +17,18 @@ const prompts = require('prompts');
  * ======================
  */
 const options = yargs
-    .usage('Usage: -view <name>')
+    .usage('Usage: --view <name>')
     .option("v", { alias: "view", describe: "your view name", type: "string" })
     .argv;
 
 const componentOptions = yargs
-    .usage('Usage: -component <name>')
+    .usage('Usage: --component <name>')
     .option("c", { alias: "component", describe: "your component name", type: "string" })
     .argv;
 
 
 const apiOptions = yargs
-    .usage('Usage: -api')
+    .usage('Usage: --api')
     .option("a", { alias: "api", describe: "your api scaffolding" })
     .argv;
 
@@ -233,7 +233,7 @@ if (apiOptions.api) {
                     fetchInit()
                     break;
                 default:
-                    fetchInit();
+                    console.log('cancel creating api scaffolding')
                     break;
             }
         })
