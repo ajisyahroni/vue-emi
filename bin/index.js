@@ -3,13 +3,15 @@
 // _____________________
 // ONLINE DEPENDENCY
 const yargs = require("yargs");
-const chalk = require('chalk');
-
-let hint = (hint) => {
-    return chalk.green(hint)
-}
-
 // end import here
+
+// global helpers
+const remove = require("./module/helper/array");
+const hint = require("./module/helper/hint")
+const banner = require("./module/helper/banner")
+
+// set to array prototype
+Array.prototype.remove = remove;
 
 
 
@@ -25,19 +27,9 @@ let repo = new Repo();
 
 
 
-Array.prototype.remove = function () {
-    var what, a = arguments, L = a.length, ax;
-    while (L && this.length) {
-        what = a[--L];
-        while ((ax = this.indexOf(what)) !== -1) {
-            this.splice(ax, 1);
-        }
-    }
-    return this;
-};
 
 
-const log = console.log;
+
 
 
 var argv = yargs
@@ -137,7 +129,7 @@ var argv = yargs
 checkCommands(yargs, argv, 1)
 function checkCommands(yargs, argv, numRequired) {
     if (argv._.length < numRequired) {
-        console.log(chalk.green('ahahh'))
+        banner()
         yargs.showHelp()
     } else {
         // check for unknown command
