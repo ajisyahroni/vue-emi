@@ -1,11 +1,11 @@
-<!-- ${options.view} view -->
+<!-- ${viewName} view -->
 <template>
   <div></div>
 </template>
 
 <script>
 export default {
-  name:'${options.view}View',
+  name:'${viewName}View',
   mounted() {},
   data: () => {
     return {};

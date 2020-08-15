@@ -1,11 +1,11 @@
-<!-- ${componentOptions.component} component -->
+<!-- ${componentName} component -->
 <template>
   <div></div>
 </template>
 
 <script>
 export default {
-  name:'${componentOptions.component}Component',
+  name:'${componentName}Component',
   mounted() {},
   data: () => {
     return {};

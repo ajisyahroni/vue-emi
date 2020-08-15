@@ -9,8 +9,9 @@ const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 const readDir = util.promisify(fs.readdir);
 const mkDir = util.promisify(fs.mkdir);
+const existsSync = fs.existsSync
 /**
  * END PROMISIFY
  */
 
-module.exports = { readFile, writeFile, readDir, mkDir }
+module.exports = { readFile, writeFile, readDir, mkDir, existsSync }
