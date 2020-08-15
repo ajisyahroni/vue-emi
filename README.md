@@ -4,43 +4,33 @@ Artisan like on Vue JS
 ## creating view
 
 ```
-emi --view YourViewName
+emi make:view YourViewName1 YourViewName2 YourViewName3 
 ```
 
-or with shorthand 😋:
+create view to spesific directory 😋:
 ```
-emi -v YourViewName
+emi make:view YourViewName1 YourViewName2 YourViewName -d directory
 ```
 
 
 
 ## creating component
 ```
-emi --component YourComponentName
+emi make:comp YourComponentName1 YourComponentName2 YourComponentName3
 ```
 
-or with shorthand 😎:
+create component to spesific directory 😎:
 ```
-emi -c YourComponentName
+emi make:comp YourComponentName1 YourComponentName2 YourComponentName3 -d directory
 ```
 
 ## creating api 
 ### you can select axios or fetch native 
 ```
-emi --api
-```
-or
-```
-emi -a
+emi make:api
 ```
 
 ## creating repository pattern 
-### if you prefer repository pattern
-#### note please run `emi -a` before run repository pattern command
 ```
-emi --repo YourRepoName
-```
-or
-```
-emi -r YourRepoName
+emi make:repo YourRepoName1 YourRepoName2 YourRepoName3
 ```
