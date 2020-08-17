@@ -19,11 +19,13 @@ const View = require('./module/View');
 const Component = require('./module/Component');
 const Api = require("./module/Api");
 const Repo = require('./module/Repository');
+const Logger = require('./module/Logger')
 
 let comp = new Component();
 let view = new View();
 let api = new Api();
 let repo = new Repo();
+let logger = new Logger();
 
 
 
@@ -115,6 +117,19 @@ var argv = yargs
     .command('make:repo', hint('creating repo scaffolding'), function (yargs) {
         let arrayOfRepo = Array.from(yargs.argv._).remove('make:repo');
         repo.bulkCreate(arrayOfRepo)
+    })
+
+    /**
+   * =======================================
+   * 
+   * Logger CMD
+   * 
+   * =======================================
+   * 
+   */
+
+    .command('make:logger', hint('creating beautiful logger'), function (yargs) {
+        logger.create();
     })
 
 
