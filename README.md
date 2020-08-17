@@ -34,3 +34,12 @@ emi make:api
 ```
 emi make:repo YourRepoName1 YourRepoName2 YourRepoName3
 ```
+
+
+
+## add beautify logger 
+```
+emi make:logger
+```
+
+
