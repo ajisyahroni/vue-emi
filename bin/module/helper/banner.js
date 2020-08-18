@@ -1,14 +1,14 @@
 const chalk = require('chalk');
 const boxen = require('boxen')
-
+const pjson = require('../../../package.json');
 
 module.exports = function (hint) {
 
-    let text = `______ ${chalk.red('EMI')} ______`;
+    let text = `______ ${chalk.red(pjson.name)} ______`;
     text += '\n';
-    text += chalk.green("VUE Project Asisstant");
+    text += chalk.green(pjson.description);
     text += '\n';
-    text += "v.1.0.0"
+    text += 'v' + pjson.version
     let options = {
         borderColor: 'cyan',
         borderStyle: 'round',
