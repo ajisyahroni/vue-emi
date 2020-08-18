@@ -124,8 +124,10 @@ var argv = yargs
 
     .command('make:repo', hint('creating repo scaffolding'), function (yargs) {
         git.checkFiles(() => {
-            let arrayOfRepo = Array.from(yargs.argv._).remove('make:repo');
-            repo.bulkCreate(arrayOfRepo)
+            repo.isApiReady(() => {
+                let arrayOfRepo = Array.from(yargs.argv._).remove('make:repo');
+                repo.bulkCreate(arrayOfRepo)
+            })
         })
     })
 
@@ -139,7 +141,7 @@ var argv = yargs
    */
 
     .command('make:logger', hint('creating beautiful logger'), function (yargs) {
-        git.checkFiles(()=>{
+        git.checkFiles(() => {
             logger.create();
         })
     })

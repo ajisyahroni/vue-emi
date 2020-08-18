@@ -6,6 +6,12 @@ class Repository extends App {
         this.extension = "js"
     }
 
+    isApiReady(callback) {
+        let condition = this.existsSync('src/api/index.js') && this.existsSync('src/api/config.js') && (this.existsSync('src/api/fetch.js') || this.existsSync('src/api/axios.js'))
+        if (condition) return callback();
+        this.info('please run emi make:api first')
+    }
+
     async dirInit(dirPath = this.repoDirectory) {
 
         try {
