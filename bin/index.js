@@ -19,13 +19,15 @@ const View = require('./module/View');
 const Component = require('./module/Component');
 const Api = require("./module/Api");
 const Repo = require('./module/Repository');
-const Logger = require('./module/Logger')
+const Logger = require('./module/Logger');
+const Git = require('./module/Git')
 
 let comp = new Component();
 let view = new View();
 let api = new Api();
 let repo = new Repo();
 let logger = new Logger();
+let git = new Git();
 
 
 
@@ -48,18 +50,20 @@ var argv = yargs
      */
 
     .command('make:view', hint('create a new view'), function (yargs) {
-        let dirOption = yargs.option('d', { alias: 'dir', describe: 'directory for creating views', type: "string" }).argv
+        git.checkFiles(() => {
+            let dirOption = yargs.option('d', { alias: 'dir', describe: 'directory for creating views', type: "string" }).argv
 
-        let arrayOfViews = Array.from(yargs.argv._).remove('make:view');
+            let arrayOfViews = Array.from(yargs.argv._).remove('make:view');
 
-        let creatingViews = () => {
-            view.bulkCreate(arrayOfViews)
-        }
-        let withDir = () => {
+            let creatingViews = () => {
+                view.bulkCreate(arrayOfViews)
+            }
+            let withDir = () => {
 
-            view.bulkCreate(arrayOfViews, dirOption.dir)
-        }
-        dirOption.dir ? withDir() : creatingViews();
+                view.bulkCreate(arrayOfViews, dirOption.dir)
+            }
+            dirOption.dir ? withDir() : creatingViews();
+        })
     })
 
 
@@ -73,17 +77,19 @@ var argv = yargs
      */
 
     .command('make:comp', hint('creating a new component'), function (yargs) {
-        let dirOption = yargs.option('d', { alias: 'dir', describe: 'directory for creating components', type: "string" }).argv
+        git.checkFiles(() => {
+            let dirOption = yargs.option('d', { alias: 'dir', describe: 'directory for creating components', type: "string" }).argv
 
-        let arrayOfComponents = Array.from(yargs.argv._).remove('make:comp');
+            let arrayOfComponents = Array.from(yargs.argv._).remove('make:comp');
 
-        let creatingViews = () => {
-            comp.bulkCreate(arrayOfComponents)
-        }
-        let withDir = () => {
-            comp.bulkCreate(arrayOfComponents, dirOption.dir)
-        }
-        dirOption.dir ? withDir() : creatingViews();
+            let creatingViews = () => {
+                comp.bulkCreate(arrayOfComponents)
+            }
+            let withDir = () => {
+                comp.bulkCreate(arrayOfComponents, dirOption.dir)
+            }
+            dirOption.dir ? withDir() : creatingViews();
+        })
     })
 
 
@@ -99,7 +105,9 @@ var argv = yargs
 
 
     .command('make:api', hint('creating api scaffolding'), function (yargs) {
-        api.init();
+        git.checkFiles(() => {
+            api.init();
+        })
     })
 
 
@@ -115,8 +123,10 @@ var argv = yargs
 
 
     .command('make:repo', hint('creating repo scaffolding'), function (yargs) {
-        let arrayOfRepo = Array.from(yargs.argv._).remove('make:repo');
-        repo.bulkCreate(arrayOfRepo)
+        git.checkFiles(() => {
+            let arrayOfRepo = Array.from(yargs.argv._).remove('make:repo');
+            repo.bulkCreate(arrayOfRepo)
+        })
     })
 
     /**
@@ -129,7 +139,9 @@ var argv = yargs
    */
 
     .command('make:logger', hint('creating beautiful logger'), function (yargs) {
-        logger.create();
+        git.checkFiles(()=>{
+            logger.create();
+        })
     })
 
 
