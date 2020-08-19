@@ -5,8 +5,7 @@
  * ================================
  */
 // change if you doesnt have api interface
-import API from '../api'
-const endpoint_domain = '${repoName.toLocaleLowerCase()}' // just for example
+import API from '../service'
 
 export default {
     /**

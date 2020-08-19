@@ -3,7 +3,7 @@ class Api extends App {
     constructor() {
         super();
 
-        this.apiDirectory = "src/api";
+        this.apiDirectory = "src/service";
 
         // property for prompt
         this.choiceApiOptions = {

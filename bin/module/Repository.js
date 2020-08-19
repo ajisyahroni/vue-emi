@@ -7,7 +7,7 @@ class Repository extends App {
     }
 
     isApiReady(callback) {
-        let condition = this.existsSync('src/api/index.js') && this.existsSync('src/api/config.js') && (this.existsSync('src/api/fetch.js') || this.existsSync('src/api/axios.js'))
+        let condition = this.existsSync('src/service/index.js') && this.existsSync('src/service/config.js') && (this.existsSync('src/service/fetch.js') || this.existsSync('src/service/axios.js'))
         if (condition) return callback();
         this.info('please run emi make:api first')
     }
